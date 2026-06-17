@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kollab Insights — Panel de Visibilidad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__brand">
+      <span class="header__eyebrow">Kollab · Plataforma Integrada de Gestión del Trabajo</span>
+      <h1 class="header__title">Panel de Visibilidad &amp; Carga Laboral</h1>
+      <p class="header__sub">MVP de integración sobre Trello — centraliza tareas de los tableros de equipo
+        y traduce su estado a indicadores de avance, retrasos y distribución de carga.</p>
+    </div>
+    <div class="integration-pill">
+      <span class="dot dot--ok"></span>
+      Conectado a <strong>Trello API</strong> &nbsp;·&nbsp; 4 tableros sincronizados
+    </div>
+  </header>
+
+  <!-- ========== FILTROS ========== -->
+  <section class="filters" id="filters">
+    <div class="filter-group">
+      <label for="f-account">Cuenta</label>
+      <select id="f-account">
+        <option value="">Todas</option>
+        <option>Banco Andino</option>
+        <option>RetailPlus</option>
+        <option>Interno</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="f-project">Proyecto</label>
+      <select id="f-project">
+        <option value="">Todos</option>
+        <option>Portal Clientes</option>
+        <option>App Logística</option>
+        <option>Migración CRM</option>
+        <option>Onboarding Interno</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="f-team">Equipo</label>
+      <select id="f-team">
+        <option value="">Todos</option>
+        <option>Desarrollo</option>
+        <option>QA</option>
+        <option>Diseño</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="f-date">Vencimiento desde</label>
+      <input type="date" id="f-date" value="2026-06-01" />
+    </div>
+    <button class="btn-reset" id="reset-btn">Limpiar filtros</button>
+  </section>
+
+  <!-- ========== KPIs ========== -->
+  <section class="kpis" id="kpis">
+    <div class="kpi-card">
+      <div class="kpi-card__label">TAREAS EN TABLERO</div>
+      <div class="kpi-card__value" id="kpi-total">—</div>
+      <div class="kpi-card__delta kpi-card__delta--flat">distribuidas en 4 estados</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">TAREAS VENCIDAS</div>
+      <div class="kpi-card__value" id="kpi-overdue">—</div>
+      <div class="kpi-card__delta kpi-card__delta--bad" id="kpi-overdue-delta"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">AVANCE GENERAL</div>
+      <div class="kpi-card__value" id="kpi-progress">—</div>
+      <div class="kpi-card__delta kpi-card__delta--flat">tareas en "Hecho" / total</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">COLABORADORES SOBRECARGADOS</div>
+      <div class="kpi-card__value" id="kpi-overload">—</div>
+      <div class="kpi-card__delta kpi-card__delta--bad" id="kpi-overload-delta"></div>
+    </div>
+  </section>
+
+  <!-- ========== MAIN GRID ========== -->
+  <div class="main-grid">
+
+    <!-- Panel tablero Trello -->
+    <div class="panel panel--board">
+      <h2 class="panel__title">Tablero · Estado del trabajo en tiempo real</h2>
+      <p class="panel__desc">
+        Datos sincronizados desde las listas de Trello (To Do, En curso, Revisión, Hecho).
+        Cada tarjeta muestra cuenta, proyecto, responsable y fecha límite.
+      </p>
+      <div class="board" id="board"></div>
+    </div>
+
+    <!-- Panel carga laboral -->
+    <div class="panel panel--workload">
+      <h2 class="panel__title">Carga laboral por colaborador</h2>
+      <p class="panel__desc">Tareas activas vs. capacidad estimada (6 tareas).</p>
+      <div id="workload"></div>
+      <div class="workload-legend">
+        <span><i class="legend-dot legend-dot--ok"></i>Normal (&lt;70%)</span>
+        <span><i class="legend-dot legend-dot--warn"></i>Alta (70–100%)</span>
+        <span><i class="legend-dot legend-dot--bad"></i>Sobrecarga (&gt;100%)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========== NOTA MVP ========== -->
+  <div class="mvp-note">
+    <strong>Alcance del MVP:</strong> este prototipo consume una estructura de datos equivalente
+    a la API de Trello (tableros, listas, tarjetas, miembros, etiquetas y fechas de vencimiento)
+    y demuestra la viabilidad técnica de la alternativa adquirida (Trello) para Kollab.
+    <strong>Límites frente al sistema completo:</strong> datos estáticos representativos;
+    en producción se conectaría vía OAuth + webhooks con sincronización periódica.
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
