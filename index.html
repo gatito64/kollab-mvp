@@ -1,130 +1,185 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kollab Insights — Panel de Visibilidad</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
- <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kollab Insights — Panel de Visibilidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#14171F;--surface:#1D212C;--surface-2:#262B38;--line:#343B4C;--text:#EDEFF5;--muted:#8B93A8;--accent:#4DD6C0;--accent-soft:rgba(77,214,192,0.13);--ok:#5FD17B;--warn:#F4B740;--bad:#F4685B;--trello:#5C9BD9;--radius:10px;--radius-sm:7px;--font-mono:'JetBrains Mono',monospace;--font-title:'Sora',sans-serif;--font-body:'Inter',sans-serif;--content-max:1320px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;min-height:100vh;padding:28px 24px 64px}
+.header{max-width:var(--content-max);margin:0 auto 22px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.header__eyebrow{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.header__title{font-family:var(--font-title);font-size:28px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+.header__sub{color:var(--muted);font-size:13px;max-width:540px;line-height:1.55}
+.integration-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:13px;color:var(--muted);white-space:nowrap;height:fit-content}
+.integration-pill strong{color:var(--text)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot--ok{background:var(--ok);box-shadow:0 0 0 3px rgba(95,209,123,.18)}
+.filters{max-width:var(--content-max);margin:0 auto 22px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-group label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.filters select,.filters input[type="date"]{background:var(--surface-2);border:1px solid var(--line);color:var(--text);border-radius:var(--radius-sm);padding:7px 10px;font-size:13px;font-family:var(--font-body);min-width:145px;cursor:pointer;transition:border-color .15s}
+.filters select:focus,.filters input[type="date"]:focus{outline:2px solid var(--accent);outline-offset:1px}
+.btn-reset{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:var(--radius-sm);padding:7px 16px;font-size:13px;font-family:var(--font-body);cursor:pointer;transition:color .15s,border-color .15s;align-self:flex-end;margin-left:auto}
+.btn-reset:hover{color:var(--text);border-color:var(--accent)}
+.kpis{max-width:var(--content-max);margin:0 auto 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.kpis{grid-template-columns:1fr}}
+.kpi-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.kpi-card__label{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.kpi-card__value{font-family:var(--font-title);font-size:32px;font-weight:800;line-height:1;margin-bottom:6px}
+.kpi-card__delta{font-size:12px}
+.kpi-card__delta--flat{color:var(--muted)}
+.kpi-card__delta--bad{color:var(--bad)}
+.main-grid{max-width:var(--content-max);margin:0 auto;display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start}
+@media(max-width:1050px){.main-grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.panel__title{font-family:var(--font-title);font-size:16px;font-weight:700;margin-bottom:4px}
+.panel__desc{color:var(--muted);font-size:12.5px;line-height:1.55;margin-bottom:16px}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.board{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.board{grid-template-columns:1fr}}
+.column{background:var(--surface-2);border-radius:8px;padding:10px;min-height:80px}
+.column__header{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;padding:0 2px}
+.column__count{background:var(--surface);border-radius:999px;padding:1px 8px;font-family:var(--font-mono);font-size:11px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 11px;margin-bottom:8px;font-size:13px;transition:border-color .15s,transform .1s;cursor:default}
+.card:last-child{margin-bottom:0}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card__tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.tag{font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.03em;padding:2px 7px;border-radius:4px}
+.tag--project{background:var(--accent-soft);color:var(--accent)}
+.tag--account{background:rgba(92,155,217,.16);color:var(--trello)}
+.card__title{line-height:1.4;margin-bottom:9px;font-size:13px}
+.card__meta{display:flex;justify-content:space-between;align-items:center}
+.card__due{font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.card__due--overdue{color:var(--bad);font-weight:600}
+.avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10131A;flex-shrink:0}
+.column__empty{color:var(--muted);font-size:12px;text-align:center;padding:20px 0}
+.member-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.member-row:last-child{border-bottom:none}
+.member-row__info{flex:1;min-width:0}
+.member-row__name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member-row__team{font-size:11px;color:var(--muted);margin-top:1px}
+.load-wrap{width:88px;flex-shrink:0}
+.load-bar{height:6px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:3px}
+.load-bar__fill{height:100%;border-radius:999px;display:block;transition:width .4s ease}
+.load-bar__fill--ok{background:var(--ok)}
+.load-bar__fill--warn{background:var(--warn)}
+.load-bar__fill--bad{background:var(--bad)}
+.load-pct{font-family:var(--font-mono);font-size:11px;text-align:right}
+.load-pct--ok{color:var(--ok)}
+.load-pct--warn{color:var(--warn)}
+.load-pct--bad{color:var(--bad)}
+.workload-legend{display:flex;gap:14px;margin-top:16px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.workload-legend span{display:flex;align-items:center;gap:6px}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.legend-dot--ok{background:var(--ok)}
+.legend-dot--warn{background:var(--warn)}
+.legend-dot--bad{background:var(--bad)}
+.mvp-note{max-width:var(--content-max);margin:20px auto 0;padding:14px 18px;border:1px dashed var(--line);border-radius:var(--radius);color:var(--muted);font-size:12.5px;line-height:1.65}
+.mvp-note strong{color:var(--text)}
+</style>
 </head>
 <body>
 
-  <!-- ========== HEADER ========== -->
-  <header class="header">
-    <div class="header__brand">
-      <span class="header__eyebrow">Kollab · Plataforma Integrada de Gestión del Trabajo</span>
-      <h1 class="header__title">Panel de Visibilidad &amp; Carga Laboral</h1>
-      <p class="header__sub">MVP de integración sobre Trello — centraliza tareas de los tableros de equipo
-        y traduce su estado a indicadores de avance, retrasos y distribución de carga.</p>
-    </div>
-    <div class="integration-pill">
-      <span class="dot dot--ok"></span>
-      Conectado a <strong>Trello API</strong> &nbsp;·&nbsp; 4 tableros sincronizados
-    </div>
-  </header>
-
-  <!-- ========== FILTROS ========== -->
-  <section class="filters" id="filters">
-    <div class="filter-group">
-      <label for="f-account">Cuenta</label>
-      <select id="f-account">
-        <option value="">Todas</option>
-        <option>Banco Andino</option>
-        <option>RetailPlus</option>
-        <option>Interno</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="f-project">Proyecto</label>
-      <select id="f-project">
-        <option value="">Todos</option>
-        <option>Portal Clientes</option>
-        <option>App Logística</option>
-        <option>Migración CRM</option>
-        <option>Onboarding Interno</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="f-team">Equipo</label>
-      <select id="f-team">
-        <option value="">Todos</option>
-        <option>Desarrollo</option>
-        <option>QA</option>
-        <option>Diseño</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="f-date">Vencimiento desde</label>
-      <input type="date" id="f-date" value="2026-06-01" />
-    </div>
-    <button class="btn-reset" id="reset-btn">Limpiar filtros</button>
-  </section>
-
-  <!-- ========== KPIs ========== -->
-  <section class="kpis" id="kpis">
-    <div class="kpi-card">
-      <div class="kpi-card__label">TAREAS EN TABLERO</div>
-      <div class="kpi-card__value" id="kpi-total">—</div>
-      <div class="kpi-card__delta kpi-card__delta--flat">distribuidas en 4 estados</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">TAREAS VENCIDAS</div>
-      <div class="kpi-card__value" id="kpi-overdue">—</div>
-      <div class="kpi-card__delta kpi-card__delta--bad" id="kpi-overdue-delta"></div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">AVANCE GENERAL</div>
-      <div class="kpi-card__value" id="kpi-progress">—</div>
-      <div class="kpi-card__delta kpi-card__delta--flat">tareas en "Hecho" / total</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">COLABORADORES SOBRECARGADOS</div>
-      <div class="kpi-card__value" id="kpi-overload">—</div>
-      <div class="kpi-card__delta kpi-card__delta--bad" id="kpi-overload-delta"></div>
-    </div>
-  </section>
-
-  <!-- ========== MAIN GRID ========== -->
-  <div class="main-grid">
-
-    <!-- Panel tablero Trello -->
-    <div class="panel panel--board">
-      <h2 class="panel__title">Tablero · Estado del trabajo en tiempo real</h2>
-      <p class="panel__desc">
-        Datos sincronizados desde las listas de Trello (To Do, En curso, Revisión, Hecho).
-        Cada tarjeta muestra cuenta, proyecto, responsable y fecha límite.
-      </p>
-      <div class="board" id="board"></div>
-    </div>
-
-    <!-- Panel carga laboral -->
-    <div class="panel panel--workload">
-      <h2 class="panel__title">Carga laboral por colaborador</h2>
-      <p class="panel__desc">Tareas activas vs. capacidad estimada (6 tareas).</p>
-      <div id="workload"></div>
-      <div class="workload-legend">
-        <span><i class="legend-dot legend-dot--ok"></i>Normal (&lt;70%)</span>
-        <span><i class="legend-dot legend-dot--warn"></i>Alta (70–100%)</span>
-        <span><i class="legend-dot legend-dot--bad"></i>Sobrecarga (&gt;100%)</span>
-      </div>
-    </div>
-
+<header class="header">
+  <div class="header__brand">
+    <span class="header__eyebrow">Kollab · Plataforma Integrada de Gestión del Trabajo</span>
+    <h1 class="header__title">Panel de Visibilidad &amp; Carga Laboral</h1>
+    <p class="header__sub">MVP de integración sobre Trello — centraliza tareas de los tableros de equipo y traduce su estado a indicadores de avance, retrasos y distribución de carga.</p>
   </div>
-
-  <!-- ========== NOTA MVP ========== -->
-  <div class="mvp-note">
-    <strong>Alcance del MVP:</strong> este prototipo consume una estructura de datos equivalente
-    a la API de Trello (tableros, listas, tarjetas, miembros, etiquetas y fechas de vencimiento)
-    y demuestra la viabilidad técnica de la alternativa adquirida (Trello) para Kollab.
-    <strong>Límites frente al sistema completo:</strong> datos estáticos representativos;
-    en producción se conectaría vía OAuth + webhooks con sincronización periódica.
+  <div class="integration-pill">
+    <span class="dot dot--ok"></span>
+    Conectado a <strong>Trello API</strong> &nbsp;·&nbsp; 4 tableros sincronizados
   </div>
- <script src="data.js"></script>
-  <script src="app.js"></script>
-</body>
-</html>
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+</header>
+
+<section class="filters">
+  <div class="filter-group">
+    <label for="f-account">Cuenta</label>
+    <select id="f-account">
+      <option value="">Todas</option>
+      <option>Banco Andino</option>
+      <option>RetailPlus</option>
+      <option>Interno</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="f-project">Proyecto</label>
+    <select id="f-project">
+      <option value="">Todos</option>
+      <option>Portal Clientes</option>
+      <option>App Logística</option>
+      <option>Migración CRM</option>
+      <option>Onboarding Interno</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="f-team">Equipo</label>
+    <select id="f-team">
+      <option value="">Todos</option>
+      <option>Desarrollo</option>
+      <option>QA</option>
+      <option>Diseño</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="f-date">Vencimiento desde</label>
+    <input type="date" id="f-date" value="2026-06-01"/>
+  </div>
+  <button class="btn-reset" id="reset-btn">Limpiar filtros</button>
+</section>
+
+<section class="kpis">
+  <div class="kpi-card"><div class="kpi-card__label">TAREAS EN TABLERO</div><div class="kpi-card__value" id="kpi-total">—</div><div class="kpi-card__delta kpi-card__delta--flat">distribuidas en 4 estados</div></div>
+  <div class="kpi-card"><div class="kpi-card__label">TAREAS VENCIDAS</div><div class="kpi-card__value" id="kpi-overdue">—</div><div class="kpi-card__delta kpi-card__delta--bad" id="kpi-overdue-delta"></div></div>
+  <div class="kpi-card"><div class="kpi-card__label">AVANCE GENERAL</div><div class="kpi-card__value" id="kpi-progress">—</div><div class="kpi-card__delta kpi-card__delta--flat">tareas en "Hecho" / total</div></div>
+  <div class="kpi-card"><div class="kpi-card__label">COLABORADORES SOBRECARGADOS</div><div class="kpi-card__value" id="kpi-overload">—</div><div class="kpi-card__delta kpi-card__delta--bad" id="kpi-overload-delta"></div></div>
+</section>
+
+<div class="main-grid">
+  <div class="panel panel--board">
+    <h2 class="panel__title">Tablero · Estado del trabajo en tiempo real</h2>
+    <p class="panel__desc">Datos sincronizados desde las listas de Trello. Cada tarjeta muestra cuenta, proyecto, responsable y fecha límite.</p>
+    <div class="board" id="board"></div>
+  </div>
+  <div class="panel panel--workload">
+    <h2 class="panel__title">Carga laboral por colaborador</h2>
+    <p class="panel__desc">Tareas activas vs. capacidad estimada (6 tareas).</p>
+    <div id="workload"></div>
+    <div class="workload-legend">
+      <span><i class="legend-dot legend-dot--ok"></i>Normal (&lt;70%)</span>
+      <span><i class="legend-dot legend-dot--warn"></i>Alta (70–100%)</span>
+      <span><i class="legend-dot legend-dot--bad"></i>Sobrecarga (&gt;100%)</span>
+    </div>
+  </div>
+</div>
+
+<div class="mvp-note">
+  <strong>Alcance del MVP:</strong> este prototipo consume una estructura de datos equivalente a la API de Trello y demuestra la viabilidad técnica de la alternativa adquirida para Kollab.
+  <strong>Límites frente al sistema completo:</strong> datos estáticos representativos; en producción se conectaría vía OAuth + webhooks con sincronización periódica.
+</div>
+
+<script>
+const MEMBERS={MR:{id:"MR",name:"Marco Reyes",team:"Desarrollo",color:"#4DD6C0",capacity:6},CL:{id:"CL",name:"Camila Luna",team:"QA",color:"#5C9BD9",capacity:6},JT:{id:"JT",name:"Javiera Torres",team:"Diseño",color:"#F4B740",capacity:6},PA:{id:"PA",name:"Pablo Aros",team:"Desarrollo",color:"#F4685B",capacity:6},SN:{id:"SN",name:"Sofía Núñez",team:"Desarrollo",color:"#C792EA",capacity:6},DC:{id:"DC",name:"Diego Cofré",team:"QA",color:"#7FD1B9",capacity:6}};
+const LISTS=["To Do","En curso","Revisión","Hecho"];
+const CARDS=[{id:1,title:"Diseñar endpoint de sincronización de tareas",list:"En curso",account:"Banco Andino",project:"Portal Clientes",member:"MR",due:"2026-06-18"},{id:2,title:"Revisar credenciales OAuth para integración Trello",list:"To Do",account:"Interno",project:"Onboarding Interno",member:"PA",due:"2026-06-25"},{id:3,title:"QA flujo de login App Logística",list:"Revisión",account:"RetailPlus",project:"App Logística",member:"CL",due:"2026-06-10"},{id:4,title:"Migrar campos personalizados de CRM legado",list:"En curso",account:"Banco Andino",project:"Migración CRM",member:"SN",due:"2026-06-09"},{id:5,title:"Maquetar dashboard de carga laboral",list:"Hecho",account:"Interno",project:"Onboarding Interno",member:"JT",due:"2026-06-05"},{id:6,title:"Configurar Power-Up de etiquetas por cuenta",list:"To Do",account:"RetailPlus",project:"App Logística",member:"DC",due:"2026-06-22"},{id:7,title:"Corregir bug de notificaciones duplicadas",list:"En curso",account:"Banco Andino",project:"Portal Clientes",member:"PA",due:"2026-06-08"},{id:8,title:"Documentar API de tareas para stakeholders",list:"To Do",account:"Interno",project:"Migración CRM",member:"MR",due:"2026-06-30"},{id:9,title:"Pruebas de carga del módulo de reportes",list:"Revisión",account:"Banco Andino",project:"Portal Clientes",member:"DC",due:"2026-06-15"},{id:10,title:"Actualizar paleta y guía visual del portal",list:"Hecho",account:"RetailPlus",project:"App Logística",member:"JT",due:"2026-06-02"},{id:11,title:"Integrar webhook de comentarios Trello → Slack",list:"En curso",account:"Interno",project:"Onboarding Interno",member:"SN",due:"2026-06-20"},{id:12,title:"Refactor de servicio de autenticación CRM",list:"To Do",account:"Banco Andino",project:"Migración CRM",member:"SN",due:"2026-06-28"},{id:13,title:"Validar accesibilidad de formulario de registro",list:"Revisión",account:"RetailPlus",project:"App Logística",member:"CL",due:"2026-06-12"},{id:14,title:"Preparar reporte de avance para CTO",list:"Hecho",account:"Interno",project:"Onboarding Interno",member:"MR",due:"2026-06-01"},{id:15,title:"Optimizar consultas del panel de métricas",list:"En curso",account:"Banco Andino",project:"Portal Clientes",member:"MR",due:"2026-06-07"},{id:16,title:"Definir criterios de aceptación módulo reportes",list:"To Do",account:"Banco Andino",project:"Portal Clientes",member:"DC",due:"2026-06-19"},{id:17,title:"Diseñar pantallas de notificaciones push",list:"To Do",account:"RetailPlus",project:"App Logística",member:"JT",due:"2026-06-26"},{id:18,title:"Revisar SLA de respuesta del equipo QA",list:"En curso",account:"Interno",project:"Onboarding Interno",member:"CL",due:"2026-06-11"},{id:19,title:"Implementar paginación en listado de proyectos",list:"Revisión",account:"Banco Andino",project:"Portal Clientes",member:"PA",due:"2026-06-14"},{id:20,title:"Capacitar equipo en uso de Power-Ups de Trello",list:"Hecho",account:"Interno",project:"Onboarding Interno",member:"DC",due:"2026-06-03"}];
+const TODAY="2026-06-17";
+function getInitials(n){return n.split(" ").map(p=>p[0]).join("").slice(0,2).toUpperCase()}
+function isOverdue(c){return c.due<TODAY&&c.list!=="Hecho"}
+function getFilteredCards(){const a=document.getElementById("f-account").value,p=document.getElementById("f-project").value,t=document.getElementById("f-team").value,d=document.getElementById("f-date").value;return CARDS.filter(c=>{if(a&&c.account!==a)return false;if(p&&c.project!==p)return false;if(t&&MEMBERS[c.member].team!==t)return false;if(d&&c.due<d)return false;return true})}
+function buildCardHTML(card){const m=MEMBERS[card.member],ov=isOverdue(card),dl=ov?`⚠ Vencida · ${card.due}`:card.due,dc=ov?"card__due card__due--overdue":"card__due";return`<div class="card"><div class="card__tags"><span class="tag tag--project">${card.project}</span><span class="tag tag--account">${card.account}</span></div><div class="card__title">${card.title}</div><div class="card__meta"><span class="${dc}">${dl}</span><span class="avatar" style="background:${m.color}" title="${m.name}">${getInitials(m.name)}</span></div></div>`}
+function renderBoard(cards){const b=document.getElementById("board");b.innerHTML="";LISTS.forEach(ln=>{const lc=cards.filter(c=>c.list===ln),col=document.createElement("div");col.className="column";col.innerHTML=`<div class="column__header"><span>${ln}</span><span class="column__count">${lc.length}</span></div>`;if(lc.length===0){col.innerHTML+=`<div class="column__empty">Sin tarjetas</div>`}else{lc.forEach(card=>{col.innerHTML+=buildCardHTML(card)})}b.appendChild(col)})}
+function renderKPIs(cards){const total=cards.length,ov=cards.filter(isOverdue).length,done=cards.filter(c=>c.list==="Hecho").length,prog=total>0?Math.round(done/total*100):0;let olc=0;Object.keys(MEMBERS).forEach(k=>{const a=cards.filter(c=>c.member===k&&c.list!=="Hecho").length;if(a/MEMBERS[k].capacity*100>100)olc++});document.getElementById("kpi-total").textContent=total;document.getElementById("kpi-overdue").textContent=ov;document.getElementById("kpi-overdue-delta").textContent=ov>0?`${ov} tarea(s) requieren atención inmediata`:"Sin retrasos activos";document.getElementById("kpi-progress").textContent=`${prog}%`;document.getElementById("kpi-overload").textContent=olc;document.getElementById("kpi-overload-delta").textContent=olc>0?"colaboradores por encima del 100% de capacidad":"Carga distribuida correctamente"}
+function loadLevel(p){if(p>100)return"bad";if(p>=70)return"warn";return"ok"}
+function renderWorkload(cards){const w=document.getElementById("workload");w.innerHTML="";Object.values(MEMBERS).forEach(m=>{const a=cards.filter(c=>c.member===m.id&&c.list!=="Hecho").length,pct=Math.round(a/m.capacity*100),lv=loadLevel(pct);w.innerHTML+=`<div class="member-row"><span class="avatar" style="background:${m.color}" title="${m.name}">${getInitials(m.name)}</span><div class="member-row__info"><div class="member-row__name">${m.name}</div><div class="member-row__team">${m.team} · ${a} activas</div></div><div class="load-wrap"><div class="load-bar"><span class="load-bar__fill load-bar__fill--${lv}" style="width:${Math.min(pct,100)}%"></span></div><div class="load-pct load-pct--${lv}">${pct}%</div></div></div>`})}
+function render(){const f=getFilteredCards();renderBoard(f);renderKPIs(f);renderWorkload(f)}
+["f-account","f-project","f-team","f-date"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+document.getElementById("reset-btn").addEventListener("click",()=>{document.getElementById("f-account").value="";document.getElementById("f-project").value="";document.getElementById("f-team").value="";document.getElementById("f-date").value="2026-06-01";render()});
+render();
+</script>
 </body>
 </html>
